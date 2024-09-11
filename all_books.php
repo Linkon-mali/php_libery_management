@@ -1,0 +1,75 @@
+<?php
+require_once './dbconn.php';
+session_start();
+
+if (!isset($_SESSION['student_email'])) {
+    header('location: student_login.php');
+}
+$student_id = $_SESSION['student_id'];
+mysqli_query($conn, "DELETE FROM `issue_books` WHERE date_time < (NOW() - INTERVAL 20 MINUTE) AND `book_return_date`!=' '");
+?>
+<?php require_once './top_content.php' ?>
+<!-- CONTENT -->
+<div style="margin-top: 10px;" class="content">
+    <!-- content HEADER -->
+    <div class="content-header">
+        <!-- leftside content header -->
+        <div class="leftside-content-header">
+            <ul class="breadcrumbs">
+                <li><i class="fa fa-home" aria-hidden="true"></i><a href="index.php">Dashboard</a></li>
+                <li><i aria-hidden="true"></i><a href="javascript: avoid(0)">All Books</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+    <div class="row animated fadeInUp">
+        <div class="col-sm-12">
+            <div class="panel">
+                <div class="panel-content">
+                    <div class="table-responsive">
+                        <table id="basic-table" class="data-table table table-bordered table-striped nowrap table-hover" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Book Name</th>
+                                    <th>Book Image</th>
+                                    <th>Book publication</th>
+                                    <th>Book Auth Name</th>
+                                    <th>Book AV Quantity</th>
+                                    <th>Liberyan Name</th>
+                                    <th>Book Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $db_info = mysqli_query($conn, "SELECT books.id, books.book_name, books.book_image, books.book_author_name, books.book_publication_name, books.book_price, books.book_available_qty, books.book_qty, books.liberyan_id, liberyan.name 
+                                FROM books INNER JOIN liberyan ON books.liberyan_id = liberyan.id");
+                                $id = 1;
+                                while ($row = mysqli_fetch_assoc($db_info)) {
+                                ?>
+                                    <tr>
+                                        <td><?= $row['id'] ?></td>
+                                        <td><?= $row['book_name'] ?></td>
+                                        <td><img style="width: 80px; height: 80px;" src="./admin/book image/<?= $row['name'] . '/' . $row['book_image'] ?>" alt=""></td>
+                                        <td><?= $row['book_publication_name'] ?></td>
+                                        <td><?= $row['book_author_name'] ?></td>
+                                        <td><?= $row['book_available_qty'] ?></td>
+                                        <td><?= $row['name'] ?></td>
+                                        <td><?= $row['book_price'] ?></td>
+                                        <td>
+                                            <a href="browd_book.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-xs btn-info">Browd Book</a>
+                                        </td>
+                                    </tr>
+                                <?php $id++;
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php require_once './bottom_content.php' ?>
