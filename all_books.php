@@ -44,7 +44,8 @@ mysqli_query($conn, "DELETE FROM `issue_books` WHERE date_time < (NOW() - INTERV
                             <tbody>
                                 <?php
                                 $db_info = mysqli_query($conn, "SELECT books.id, books.book_name, books.book_image, books.book_author_name, books.book_publication_name, books.book_price, books.book_available_qty, books.book_qty, books.liberyan_id, liberyan.name 
-                                FROM books INNER JOIN liberyan ON books.liberyan_id = liberyan.id");
+                                FROM books INNER JOIN liberyan ON books.liberyan_id = liberyan.id 
+                                WHERE books.book_available_qty > 0 ");
                                 $id = 1;
                                 while ($row = mysqli_fetch_assoc($db_info)) {
                                 ?>
